@@ -18,8 +18,8 @@ export const authOptions: NextAuthConfig = {
                 try {
                     const user = await UserModel.findOne({
                         $or: [
-                            { email: credentials.identifier },
-                            { username: credentials.identifier },
+                            { email: credentials.username },
+                            { username: credentials.username },
                         ]
                     })
 
@@ -39,7 +39,7 @@ export const authOptions: NextAuthConfig = {
                         throw new Error('Incorrect password!')
                     }
                 } catch (error: any) {
-                    throw new Error(error)
+                    throw new Error(error.message || 'Authentication failed')
                 }
             }
         })
