@@ -1,10 +1,11 @@
-import type { NextAuthConfig } from 'next-auth';
+import type { NextAuthOptions, User } from 'next-auth';
 import CredentialsProvider from "next-auth/providers/credentials"
 import bcrypt from "bcryptjs"
 import dbConnect from '@/app/lib/dbConnect';
 import UserModel from '@/app/model/User';
+import { JWT } from 'next-auth/jwt';
 
-export const authOptions: NextAuthConfig = {
+export const authOptions: NextAuthOptions = {
     providers: [
         CredentialsProvider({
             id: "credentials",
@@ -45,16 +46,8 @@ export const authOptions: NextAuthConfig = {
         })
     ],
     callbacks: {
-        async session({ session, token }) {
-            if (token) {
-                session.user._id = token._id as string
-                session.user.isVerified = token.isVerified as boolean
-                session.user.isAcceptingMessages = token.isAcceptingMessages as boolean
-                session.user.username = token.username as string
-            }
-            return session
-        },
-        async jwt({ token, user }) {
+
+        async jwt({ token, user }: { token: JWT; user?: User }) {
             if (user) {
                 token._id = user._id?.toString()
                 token.isVerified = user.isVerified
@@ -62,6 +55,16 @@ export const authOptions: NextAuthConfig = {
                 token.username = user.username
             }
             return token
+        },
+
+        async session({ session, token }: { session: any; token: JWT }) {
+            if (token) {
+                session.user._id = token._id
+                session.user.isVerified = token.isVerified
+                session.user.isAcceptingMessages = token.isAcceptingMessages
+                session.user.username = token.username
+            }
+            return session
         },
     },
     pages: {
