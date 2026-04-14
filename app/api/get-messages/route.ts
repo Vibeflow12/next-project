@@ -54,6 +54,7 @@ export async function GET(req: NextRequest) {
         )
 
     } catch (error) {
+        console.error("an unexpected error occured: ", error)
         return NextResponse.json(
             {
                 success: false, message: "failed to get all the messages for the user"
