@@ -22,7 +22,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json(
             { success: true, message: "internal server error " },
-            { status: 500, headers:  }
+            { status: 500 }
         );
     }
 }
